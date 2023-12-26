@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html >
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ticket  Statistics</title>
+    <link rel="stylesheet" href="./css/airline.css">
+    <link rel="stylesheet" href="./css/font-awesome-4.7.0/css/font-awesome.min.css">
+    <script src="./js/jquery-3.4.1.min.js"></script>
+    <!-- <script src="./js/TicketStatistics.js"></script> --> -->
+</head>
+<body>
+    <div class="top">
+        <div class="logo">
+            <img class="logoimg" src="./image/logo/logo1.png" alt="">
+        </div>   
+        <div class="status">
+            Office User Menu
+        </div>
+    </div>
+    <div class="menulist">
+        <a href="./ModifyPassword.html"><div class="list_sf" >Modify Password</div></a>
+        <div class="list_sf " style="color: #F79420;">Ticket  Statistics</div>
+        <div class="list_out">Logout</div>
+    </div> 
+    <div class="datebox">
+        <div class="monthbox">
+            <input class="startDate" type="month" name="" id="" max="">
+            <p>…………</p>
+            <input class="endDate" type="month" name="" id="" max="">
+        </div>
+        
+        <input class="stat" type="button" value="Statistics">
+    </div>
+    <table class="formclass" style="margin-top: 20px;">
+        <thead class="thead">
+            <tr style="color: white;">
+                <th>Month</th>
+                <th>Flight Amount</th>
+                <th>TicketsAmount</th>
+                <th>Tickets Revenue</th>                
+            </tr>
+        </thead>
+        <tbody class="resultList">
+            <tr class="tdcolor">
+                <td>2018-02</td>
+                <td>168</td>
+                <td>4000</td>
+                <td>150900.00</td>               
+            </tr>
+            <tr class="tdcolor1">
+                <td>2018-03</td>
+                <td>178</td>
+                <td>3000</td>
+                <td>250000.00</td>                 
+            </tr>
+            <tr class="tdcolor">
+                <td>2018-04</td>
+                <td>158</td>
+                <td>4000</td>
+                <td>350000.00</td>                 
+            </tr>
+            <tr class="tdcolor1">
+                <td>2018-05</td>
+                <td>200</td>
+                <td>4000</td>
+                <td>350050.00</td>               
+            </tr>
+        </tbody>                  
+    </table>
+</body>
+
+<script>
+        
+        var now = new Date();
+        var year = now.getFullYear();
+        var month = now.getMonth()+1;
+        month = month<10?"0"+month:month;
+        var date = year + "-" + month;
+
+        $(".startDate").prop("max",date);
+        $(".endDate").prop("max",date);
+
+        $(".endDate").change(function () {
+            var startDate = $(".startDate").val();
+            var endDate = $(".endDate").val();
+
+            if (startDate>endDate) {
+                alert("统计开始时间，必须早于结束时间");
+                $(".endDate").val(date);
+            }
+
+        })
+
+
+        $(".stat").click(function () {
+            var startDate = $(".startDate").val();
+            var endDate = $(".endDate").val();
+
+            $.ajax({
+                type:"get",
+                url:"http://localhost:8080/SunshineAirlines/getTicketStatistics",
+                data:{startDate,endDate},
+                
+                success(msg) {
+                    var json = JSON.parse(msg);
+                    var html = "";
+                    for (let i = 0; i < json.data.length; i++) {
+                        html +=`
+                        
+                        <tr class="tdcolor">
+                        <td>${json.data[i].Month}</td>
+                        <td>${json.data[i].FlightsAmount}</td>
+                        <td>${json.data[i].TicketsAmount}</td>
+                        <td>${json.data[i].TicketsRevenue}</td>               
+                    </tr>
+                      
+                        `;
+                        
+                    }
+                    $(".resultList").html(html);
+
+                }
+
+
+
+
+            })
+
+
+
+
+        })
+
+
+
+
+
+
+
+
+
+
+
+</script>
+
+
+
+
+</html>
